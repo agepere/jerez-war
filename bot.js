@@ -80,14 +80,14 @@ function fight(order){
 			leftPeople ++;
 			break;
 
-		} else if(!isAlive(attacker) && getDice(attacker)< MIN_REBIRTH){ //Actualizamos el puntero del primero por muerto
+		} else if(!isAlive(attacker) && getDice(attacker)<= MIN_REBIRTH){ //Actualizamos el puntero del primero por muerto
 			iterationAttack++;
-			console.log(attacker +" esta muertisimo next");
+			console.log(attacker +" esta muertisimo NEXT");
 			continue;
 
 		} else if(!isAlive(deffender)){ //Actualizamos el puntero del defensor por muerto
 			iterationDeffend++;
-			console.log(deffender +" esta muertisimo next");
+			console.log(deffender +" esta muertisimo NEXT");
 			continue;
 
 		} else if(attacker != deffender){
