@@ -12,7 +12,8 @@ var T = new Twit(config);
 var round=0;
 
 const MIN_REBIRTH= 98;
-const EXTRA_PER_KILL= 1.0;
+const EXTRA_PER_KILL_IN_FIGHT= 1.0;
+const EXTRA_PER_KILL_BEFORE_FIGHT= 0.2;
 
 startRound();
 
@@ -82,8 +83,12 @@ function createImage(){
 
 
 function rollDices(){
-	for(var user in people)
-		people[user][0] = Math.floor(Math.random() * 100);
+
+	for(var user in people){
+		const extra = Math.ceil(isAlive(user) ? getKills(user) * EXTRA_PER_KILL_BEFORE_FIGHT : 0);
+		people[user][0] = Math.floor(Math.random() * 100 + extra);
+	}
+	
 }
 
 function orderPeople(){
@@ -123,7 +128,7 @@ function fight(order){
 		
 		console.log(attacker + " vs " + deffender);
 
-		if(isAlive(deffender) && getDice(deffender) == 0){
+		if(isAlive(deffender) && getDice(deffender) == 0){ //Pifia del defensor
 			const currentLifes =  getLifes(deffender)-1;
 			setLifes(deffender, currentLifes);
 
@@ -159,8 +164,8 @@ function fight(order){
 			continue;
 
 		} else if(attacker != deffender){
-			var attackerDice =  Math.floor(Math.random() * 100 + getKills(attacker) * EXTRA_PER_KILL);
-			var deffenderDice =  Math.floor(Math.random() * 100 + getKills(deffender) * EXTRA_PER_KILL);
+			var attackerDice =  Math.floor(Math.random() * 100 + getKills(attacker) * EXTRA_PER_KILL_IN_FIGHT);
+			var deffenderDice =  Math.floor(Math.random() * 100 + getKills(deffender) * EXTRA_PER_KILL_IN_FIGHT);
 			console.log(attackerDice + "vs" + deffenderDice);
 
 			if(attackerDice > deffenderDice){
@@ -197,7 +202,7 @@ function fight(order){
 	}
 
 
-	return res+" Quedan "+ leftPeople +"en la guerra." ;
+	return res+" Quedan "+ leftPeople +" jerezanos luchando por la victoria." ;
 
 }
 
