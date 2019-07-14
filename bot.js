@@ -12,6 +12,7 @@ var T = new Twit(config);
 var round=0;
 
 const MIN_REBIRTH= 98;
+const EXTRA_PER_KILL= 1.0;
 
 startRound();
 
@@ -37,6 +38,7 @@ function startRound(){
 				console.log("Image created");
 
 				//TODO: Tweet test-image & tweet
+
 				console.log(tweet);
 				if(leftPeople == 1){
 					const winner = getWinner();
@@ -119,7 +121,26 @@ function fight(order){
 		
 		console.log(attacker + " vs " + deffender);
 
-		if (!isAlive(attacker) && getDice(attacker)> MIN_REBIRTH){ //Revivimos al primero 
+		if(isAlive(deffender) && getDice(deffender) == 0){
+			const currentLifes =  getLifes(deffender)-1;
+			setLifes(deffender, currentLifes);
+
+			res = "@"+deffender+ getAka(deffender) + " se ha caído el solo y ha perdido una vida HAHAHAHHA a ver si espabilamos ;)";
+
+			if(currentLifes == 1 ){
+				res += ". Ahora te queda 1 única vida, ¡aprovéchala!";
+			} else if (currentLifes > 1){
+				res += ". Aún te quedan "+ currentLifes + " pero no deberías confiarte.";
+			} else {
+				res += " y encima ha muerto definitivamente xdd, necesitarás un milagro si quieres ganar.";
+				leftPeople--;
+			}
+
+			break;
+
+
+		}
+		else if (!isAlive(attacker) && getDice(attacker)> MIN_REBIRTH){ //Revivimos al primero 
 			setLifes(attacker,1);
 			res= "¡INCREIBLE! @"+attacker+ getAka(attacker)+" ha vuelto de entre los muertos para vengarse.";
 			leftPeople ++;
@@ -136,8 +157,8 @@ function fight(order){
 			continue;
 
 		} else if(attacker != deffender){
-			var attackerDice =  Math.floor(Math.random() * 100 + getKills(attacker) * 0.5);
-			var deffenderDice =  Math.floor(Math.random() * 100 + getKills(deffender) * 0.5);
+			var attackerDice =  Math.floor(Math.random() * 100 + getKills(attacker) * EXTRA_PER_KILL);
+			var deffenderDice =  Math.floor(Math.random() * 100 + getKills(deffender) * EXTRA_PER_KILL);
 			console.log(attackerDice + "vs" + deffenderDice);
 
 			if(attackerDice > deffenderDice){
@@ -147,13 +168,13 @@ function fight(order){
 				res = "@" + attacker+ getAka(attacker) +  " ha ganado a @" + deffender + getAka(deffender);
 
 				if(currentLifes == 1 ){
-					res += ". Ahora le queda 1 única vida, ¡aprovechala!";
+					res += ". Ahora le queda 1 única vida, ¡aprovéchala!";
 				} else if (currentLifes > 1){
 					res += ". Aún le quedan "+ currentLifes + " pero no debería confiarse.";
 				}
 
 				else {
-				 res += ". Ha muerto definitivamente :(, necesitarás un milagro si quieres ganar.";
+				 res += " y ha muerto definitivamente :(, necesitarás un milagro si quieres ganar.";
 				 leftPeople--;
 				}
 
