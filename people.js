@@ -1,6 +1,5 @@
 
-
-module.exports = {
+var people = {
 	//Keroro's war
 	"agepere" : [0, 2, true, ["el ingeniero", "mas idiota que nunca"], 0 ],
 	"dany3barroso" : [0, 2, true, [],0 ],
@@ -22,4 +21,10 @@ module.exports = {
 
 	// =============================
 
-}
+};
+
+module.exports = people;
+
+
+
+

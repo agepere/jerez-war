@@ -1,7 +1,10 @@
 var Twit = require('twit');
 var config = require('./config');
 var people = require('./people');
+var webshot = require('webshot');
 const initialPeople= Object.keys(people).length;
+const initialOrder = people;
+
 var leftPeople = initialPeople;
 
 
@@ -12,25 +15,67 @@ const MIN_REBIRTH= 98;
 
 startRound();
 
-setInterval(startRound, 1000*5);
+setInterval(startRound, 1000*10);
+
 
 
 
 function startRound(){
 	rollDices();
 	const order = orderPeople();
-	var tweet = fight(order);
-	console.log(tweet);
+	const tweet = fight(order);
+	const html = createImage();
+	const options = {
+		siteType: "html",
+		streamType: "png"
+		};
 
-	if(leftPeople == 1){
-		const winner = getWinner();
-		const finish = "ENHORABUENA @" + winner + getAka(winner) +" se ha alzado con la victoria jerezana.";
-		console.log(finish);
-		process.exit();
-	}
+	webshot(html, "test-image.png", options, (err) => {
+			if (err)
+				console.log(err);
+			else{
+				console.log("Image created");
+
+				//TODO: Tweet test-image & tweet
+				console.log(tweet);
+				if(leftPeople == 1){
+					const winner = getWinner();
+					const finish = "ENHORABUENA @" + winner + getAka(winner) +" se ha alzado con la victoria jerezana.";
+					console.log(finish);
+					process.exit();
+				}
+			}
+		});
+	
+
+	
 	
 
 }
+
+function createImage(){
+	const deadStyle= "background: rgb(237,154,9);background: linear-gradient(90deg, rgba(237,154,9,0.4) 0%, rgba(207,82,20,0.9) 7%, rgba(199,71,24,1) 30%, rgba(177,52,6,1) 50%, rgba(199,71,24,1) 70%, rgba(207,82,20,1) 93%, rgba(237,154,9,0.4) 100%); text-align:center; ";
+	const damagedStyle= " background: rgb(243,244,166);background: linear-gradient(90deg, rgba(243,244,166,0.4) 0%, rgba(247,247,158,0.9) 7%, rgba(254,255,33,1) 30%, rgba(254,255,33,1) 50%, rgba(254,255,33,1) 70%, rgba(247,247,158,0.9) 93%, rgba(243,244,166,0.4) 100%);text-align:center; ";
+	var html = "<ul style='list-style-type: none; width:10%; margin-left:0px; float:left;'>";
+	var j = 0;
+
+	for(var user in initialOrder){
+		const lifes = getLifes(user);
+		const style = lifes == 0 ? deadStyle : lifes == 1 ? damagedStyle : "";
+		html +="<li style='font-family: Brush Script MT,cursive;  font-weight: 10; font-size:65%;"+ style+"'>"+user+" ["+ getKills(user) +"]</li>";
+		
+		if(j % 51 == 0 && j!=0){
+			html += "</ul><ul style='list-style-type: none; width:10%; margin-left:0px; float:left;'>";
+		}
+		j++;
+	}
+	html += "</ul>";
+	
+
+	return html;
+}
+
+
 
 function rollDices(){
 	for(var user in people)
@@ -161,5 +206,6 @@ function getKills(name){
 }
 
 function setKills(name, kills){
-	 people[name][4]= kills;
+	if(kills<100)
+		people[name][4]= kills;
 }

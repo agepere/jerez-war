@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/agepere/jerez-war#readme",
   "dependencies": {
-    "twit": "^2.2.11"
+    "dom-to-image": "^2.6.0",
+    "twit": "^2.2.11",
+    "webshot": "^0.18.0"
   }
 }
