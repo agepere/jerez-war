@@ -37,7 +37,9 @@ function startRound(){
 			else{
 				console.log("Image created");
 
+				//TODO: manage tweet puede que me pase en caracteres xD
 				//TODO: Tweet test-image & tweet
+
 
 				console.log(tweet);
 				if(leftPeople == 1){
@@ -194,7 +196,8 @@ function fight(order){
 		res = "Guau! todos han empatado en esta ronda. Podemos destacar la batalla de @"+ attacker + getAka(attacker)+ " contra @" + deffender + getAka(deffender) + " habrá que esforzarse más en la próxima." ; 
 	}
 
-	return res+" Quedan "+ leftPeople +" jerezanos luchando por la victoria." ;
+
+	return res+" Quedan "+ leftPeople +"en la guerra." ;
 
 }
 
