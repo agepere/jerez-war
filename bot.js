@@ -6,8 +6,6 @@ const initialPeople= Object.keys(people).length;
 const initialOrder = people;
 
 var leftPeople = initialPeople;
-
-
 var T = new Twit(config);
 var round=0;
 
@@ -16,7 +14,6 @@ const EXTRA_PER_KILL_IN_FIGHT= 1.0;
 const EXTRA_PER_KILL_BEFORE_FIGHT= 0.2;
 
 startRound();
-
 setInterval(startRound, 1000*10);
 
 
@@ -86,7 +83,12 @@ function rollDices(){
 
 	for(var user in people){
 		const extra = Math.ceil(isAlive(user) ? getKills(user) * EXTRA_PER_KILL_BEFORE_FIGHT : 0);
-		people[user][0] = Math.floor(Math.random() * 100 + extra);
+		var dice = Math.floor(Math.random() * 100 );
+		
+		if (dice != 0)
+		 	people[user][0] = dice + extra;
+		else 
+			people[user][0] = 0;
 	}
 	
 }
