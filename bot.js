@@ -15,6 +15,14 @@ const EXTRA_PER_KILL_IN_FIGHT= 1.0;
 const EXTRA_PER_KILL_BEFORE_FIGHT= 0.2;
 
 //startRound();
+
+T.post('statuses/update', {status: "bot has started"}, function (err, data, response) {
+	      		 	if(err)
+	      				console.log(err);
+	      			else
+	      				console.log("bot has started");
+
+	      		 });
 setInterval(startRound, 1000*60*3);
 
 
@@ -79,10 +87,6 @@ function startRound(){
 				console.log(err);
 			else{
 				console.log("Image created");
-
-				
-				//TODO: Tweet test-image & tweet
-
 
 				console.log(tweet);
 				tweetIt(tweet);
