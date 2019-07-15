@@ -2,6 +2,7 @@ var Twit = require('twit');
 var config = require('./config');
 var people = require('./people');
 var webshot = require('webshot');
+const fs = require('fs');
 const initialPeople= Object.keys(people).length;
 const initialOrder = people;
 
@@ -13,10 +14,54 @@ const MIN_REBIRTH= 98;
 const EXTRA_PER_KILL_IN_FIGHT= 1.0;
 const EXTRA_PER_KILL_BEFORE_FIGHT= 0.2;
 
-startRound();
-setInterval(startRound, 1000*10);
+//startRound();
+setInterval(startRound, 1000*60*3);
 
 
+function tweetIt(tweet){
+	var tweet1 = tweet;
+	console.log(tweet1.length);
+	var tweet2 = null;
+	if (tweet1.length >=240){
+		tweet1 = tweet.substring(0,236) + "...+"
+		tweet2 = "...+" + tweet.substring(236,tweet.length);
+		
+	}
+
+	var b64content = fs.readFileSync('./test-image.png', { encoding: 'base64' });
+
+	T.post('media/upload', { media_data: b64content }, function (err, data, response) {
+	  // now we can assign alt text to the media, for use by screen readers and
+	  // other text-based presentations and interpreters
+	  var mediaIdStr = data.media_id_string;
+	  var meta_params = { media_id: mediaIdStr }
+
+	  T.post('media/metadata/create', meta_params, function (err, data, response) {
+	    if (!err) {
+	      // now we can reference the media and post a tweet (media will attach to the tweet)
+	      var params = { status: tweet1 , media_ids: [mediaIdStr] }
+
+	      T.post('statuses/update', params, function (err, data, response) {
+	      	if(err)
+	      		console.log(err);
+	      	else if(tweet2){
+	      		console.log("tweeted 1");
+	      		 T.post('statuses/update', {status: tweet2}, function (err, data, response) {
+	      		 	if(err)
+	      				console.log(err);
+	      			else
+	      				console.log("tweeted 2");
+
+	      		 });
+	      	}else 
+	      		console.log("tweeted");
+	      });
+	    }
+	    else
+	    	console.log(err);
+	  });
+	});
+}
 
 
 function startRound(){
@@ -35,15 +80,17 @@ function startRound(){
 			else{
 				console.log("Image created");
 
-				//TODO: manage tweet puede que me pase en caracteres xD
+				
 				//TODO: Tweet test-image & tweet
 
 
 				console.log(tweet);
+				tweetIt(tweet);
 				if(leftPeople == 1){
 					const winner = getWinner();
 					const finish = "ENHORABUENA @" + winner + getAka(winner) +" se ha alzado con la victoria jerezana.";
 					console.log(finish);
+					tweetIt(tweet);
 					process.exit();
 				}
 			}
@@ -84,7 +131,7 @@ function rollDices(){
 	for(var user in people){
 		const extra = Math.ceil(isAlive(user) ? getKills(user) * EXTRA_PER_KILL_BEFORE_FIGHT : 0);
 		var dice = Math.floor(Math.random() * 100 );
-		
+
 		if (dice != 0)
 		 	people[user][0] = dice + extra;
 		else 
